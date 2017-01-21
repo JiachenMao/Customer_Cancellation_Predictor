@@ -1,4 +1,7 @@
-# Definition
+# Customer Cancellation Predictor
+## debasatwa29@gmail.com
+
+## Definition
 ## Project Overview and Problem Statement
 For a subscription-based business, reducing customer churn is critical to maintaining high growth. This project will examine a nearly six month slice of subscription transactions from such a business in an attempt to identify patterns leading to cancellation. The goal is to train a classifier capable of identifying customers at risk of cancellation using details of upcoming subscription transactions.
 
@@ -25,9 +28,9 @@ For example, consider a model that gives a recall of 0.85 and a precision of 0.2
 
 Consider another model that gives a recall of 0.1 and a precision of 0.95. Only five percent of the samples predicted to be at risk are false positives. Though fewer of the total cancellations are caught, those that are marked as downgrades or cancellations can be trusted to be so. The score of this model would be 0.1, and so it would be preferred over the previous example.
 
-*See the [Improvement](#improvement) section of the Conclusion for a potential performance metric based on lifetime customer value.*
+*Please See the [Improvement](#improvement) section of the Conclusion for a potential performance metric based on lifetime customer value.*
 
-# Analysis
+## Analysis
 ## Data Exploration
 Data for this project was prepared through a deep-dive of the company's database. After identifying several restrcitions - chief among these being lack of audits on the statuses of boxes and data integrity issues for older boxes - the following features for each refill were identified, organized into views, and extracted:
 
@@ -305,12 +308,12 @@ These two classifiers are discussed in more detail below:
 A decision tree classifier immediately stood out to me as a worthy candidate for this situation. Decision trees are used in data mining as they are performant, scalable, and suited to both numerical and categorical data while requiring little data preparation. Perhaps most important when considering that this model must be applied in a non-technical environment, decision trees can be visualized and explained to the layman. A customer retention system would be much more effective it can be intuitively understood by the marketing and rention personnel responsible for its implementation.
 
 ### Stochastic Gradient Descent
-Stochastic gradient descent (SGD) is not a model itself but rather a method of training models such as support vector machines (SVMs) and logistic regression models. Specifically, SGD is a method of finding the minima/maxima of a function by iteratively sweeping over randomly sampled subsets of the training set. It's often used for training neural nets, but those models will not be used in this project due to technical and experiential limitations. Instead, the loss functions made available by sklearn (linear SVMs, logistic regression, perceptron, and others) will be tested. The big benefit of SGD for this project is that it allows for online learning, meaning new results can more easily be incorporated into the model without having to retrain on the entire dataset.
+Stochastic gradient descent (SGD) is not a model itself but rather a method of training models such as support vector machines (SVMs) and logistic regression models. Specifically, SGD is a method of finding the minima/maxima of a function by iteratively sweeping over randomly sampled subsets of the training set. Instead, the loss functions made available by sklearn (linear SVMs, logistic regression, perceptron, and others) will be tested. The big benefit of SGD for this project is that it allows for online learning, meaning new results can more easily be incorporated into the model without having to retrain on the entire dataset.
 
 ## Benchmark
 The business's assumption up to this point was that customers have not been properly educated of the refill process and were cancelling after receiving their first refill. Another assumption was that a few, high-priced items were responsible for a large proportion of the cancellations. These two assumptions together will define our benchmark, which will be as follows: if a refill is the box's first, assume deactivation. If the average item price in the refill is more than $200, assume deactivation. Otherwise, assume no change. For simplicity, the benchmark will be established as a binary classifier.
 
-# Methodology
+## Methodology
 ## Data Preprocessing
 The following tasks need to be performed:
 
@@ -671,7 +674,7 @@ print clf.best_params_
     Best SGDClassifier score: 0.00115752926863
     {'warm_start': False, 'n_iter': 100, 'loss': 'log', 'l1_ratio': 0.125, 'fit_intercept': True, 'penalty': 'elasticnet', 'alpha': 0.01}
 
-# Results
+## Results
 ## Model Evaluation and Validation
 Based on the tuned performance of the models above, `RandomForestClassifier` seems to be a clear winner; in particular, a random forest of 50 decision trees, each of which has no maximum depth but stops splitting once the sample size is less than 10. To confirm these parameters' performance, the model will now be tested against the testing set, which contains as-yet unseen samples.
 
@@ -701,7 +704,7 @@ This model generalizes well to unseen data. Its performance on the testing set (
 
 The benchmark model would be useless in an intervention system as the value recovered from saving potential quits would quickly be burnt pursuing the wrong targets. In contrast, the random forest classifier trained above rarely predicts a cancellation that is unwarranted. However, its clear that some aspect of the problem is still not being captured by the data. I believe that identifying additional relevant features - for example, by conducting exit interviews with customers who cancelled unpredictedly - will improve the recall. In the meantime, I believe that this model can still save a significant number of customers.
 
-# Conclusion
+## Conclusion
 ## Free-Form Visualization
 
 A predictor is useful, but far more useful is intuitive understanding of the problem at hand. It's lucky, then, that the two highest-performing models (the decision tree and, by extension, the random forest) can be represented visually. The behavior of the important features will be explored below.
@@ -791,4 +794,4 @@ As I've mentioned above, I believe that adding additional relevant features will
 
 Exploring the customer angle further, I've also had the idea to perform a customer segmentation analysis. Such an analysis could provide valuable insight into customer behavior in addition to providing a few relevant features for training the predictor. The first of these would obviously be the segment number of the customer to which the box belongs. Clustering would also allow me to establish an average customer lifetime value (CLV) for each segment. A cost function for the predictor could then be defined using this CLV in the following way: if the predictor fails to catch a cancellation, it will incur a penalty of the deficit between that customer's current lifetime value and the average CLV for that customer's segment. In this way, the process of fitting the model to the data will be directly optimizing the potential value that could be recovered by using the predictor.
 
-Finally, I will admit to being disappointed that the `SGDClassifier` algorithm did not perform very well. An online learner would be a big bonus for iteratively improving the predictor. One such learner I left out of this project, mostly due to lacking the requisite experience, is a neural net. Though it carries with it the disadvantage of being black boxes, it is an online learner with a strong reputation in the industry today.
+Finally, I will admit to being disappointed that the `SGDClassifier` algorithm did not perform very well. An online learner would be a big bonus for iteratively improving the predictor. Though it carries with it the disadvantage of being black boxes, it is an online learner with a strong reputation in the industry today.
