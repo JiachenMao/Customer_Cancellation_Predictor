@@ -506,7 +506,7 @@ display(X_all.head())
     </tr>
   </tbody>
 </table>
-<p>5 rows × 89 columns</p>
+
 </div>
 
 ### Performance Metric Definition
